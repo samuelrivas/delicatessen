@@ -1,0 +1,18 @@
+{
+    "name": "Delicatessen",
+    "version": "0",
+    "icons" : {
+	"16" : "icons/lobster.png",
+	"48" : "icons/lobster.png",
+	"128" : "icons/lobster.png"
+    },
+
+    "description": "Yet-Another-Delicious-Extension to handle delicious.com bookmarks with some features I miss in other extensions available for chrome",
+    "browser_action": {
+	"default_icon": "icons/lobster.png",
+	"popup": "index.html"
+    },
+    "permissions": [
+	"http://api.flickr.com/"
+    ]
+}
