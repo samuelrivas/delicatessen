@@ -13,6 +13,6 @@
 	"popup": "index.html"
     },
     "permissions": [
-	"http://api.flickr.com/"
+	"https://api.del.icio.us/"
     ]
 }
