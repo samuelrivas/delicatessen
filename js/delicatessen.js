@@ -1,23 +1,35 @@
+var DELICATESSEN = {
+    get_document : function (url, user, passwd, on_received) {
+	var rpc_request;
+
+	rpc_request = new XMLHttpRequest();
+	rpc_request.open("GET", url, true, user, passwd);
+
+	rpc_request.onreadystatechange = function() {
+	    console.log("New request state: " + rpc_request.readyState);
+	    if (rpc_request.readyState === 4) {
+		if (rpc_request.status !== 200) {
+		    throw "Wrong HTTP status: " + rpc_request.status + " "
+			+ rpc_request.statusText
+		}
+		console.log("Received HTTP response");
+		on_received(rpc_request.responseXML);
+	    }
+	}
+
+	console.log("sending HTTP request");
+	rpc_request.send();
+    },
+
+    get_tags : function(user, passwd, on_received) {
+	DELICATESSEN.get_document(
+	    "https://api.del.icio.us/v1/tags/get", user, passwd, on_received);
+    }
+};
+
 window.onload = function() {
-    var testString = document.createElement("p");
-    var user;
-    var passwd;
+    var test_p = document.createElement("p");
 
-    testString.textContent = "Delicatessen is work in progress!";
-    document.body.appendChild(testString);
-
-    user = window.prompt("Write your user name", "User Name");
-    passwd = window.prompt("Write your password", "Password");
-
-    http = new XMLHttpRequest();
-    http.open("GET", "https://api.del.icio.us/v1/tags/get", true, user, passwd);
-    http.onreadystatechange =
-	function() {
-	    var xmlText = document.createElement("p");
-	    console.log("Received http response");
-	    xmlText.textContent = http.response;
-	    document.body.appendChild(xmlText);
-	};
-    console.log("sending http request");
-    http.send();
-}
+    test_p.textContent = "Delicatessen is work in progress!";
+    document.body.appendChild(test_p);
+};
