@@ -22,8 +22,30 @@ var DELICATESSEN = {
     },
 
     get_tags : function(user, passwd, on_received) {
+	var callback = function(tags_doc) {
+	    console.log("Parsing XML tags document");
+	    on_received(DELICATESSEN.parse_tags(tags_doc));
+	}
 	DELICATESSEN.get_document(
-	    "https://api.del.icio.us/v1/tags/get", user, passwd, on_received);
+	    "https://api.del.icio.us/v1/tags/get", user, passwd, callback);
+    },
+
+    // Internal stuff
+    //===============
+
+    // XXX This function could be heavy, but my tests with near to 2000 tags
+    // show that is not worth asynchronising it
+    parse_tags : function(tags_doc) {
+	var node = tags_doc.documentElement.firstChild;
+	var tags = [];
+
+	while (node) {
+	    if (node.nodeName === "tag") {
+		tags.push(node.attributes["tag"]);
+	    }
+	    node = node.nextSibling;
+	}
+	return tags;
     }
 };
 
