@@ -1,5 +1,5 @@
 var DELICATESSEN = {
-    get_document : function (url, user, passwd, on_received) {
+    get_document : function(url, user, passwd, on_received) {
         var rpc_request;
 
         rpc_request = new XMLHttpRequest();
