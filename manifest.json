@@ -17,5 +17,7 @@
 
     "permissions" : [
         "https://api.del.icio.us/"
-    ]
+    ],
+
+    "background_page" : "background.html"
 }
