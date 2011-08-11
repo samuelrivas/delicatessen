@@ -36,14 +36,12 @@ var DELICATESSEN = {
     // XXX This function could be heavy, but my tests with near to 2000 tags
     // show that is not worth asynchronising it
     parse_tags : function(tags_doc) {
-        var node = tags_doc.documentElement.firstChild;
+        var nodes = tags_doc.getElementsByTagName("tag");
         var tags = [];
+        var i;
 
-        while (node) {
-            if (node.nodeName === "tag") {
-                tags.push(node.attributes["tag"]);
-            }
-            node = node.nextSibling;
+        for (i = 0; i < nodes.length; i++) {
+            tags.push(nodes[i].attributes["tag"]);
         }
         return tags;
     }
