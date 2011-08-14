@@ -1,1 +1,21 @@
 A chrome extension to handle delicious.com bookmarks
+
+For now, it just loads your tags and shows them on a popup. My intention is to
+implement something to retrieve tagged pages in a way similar to the firefox
+chrome extension. I haven't found any extension that does this, and using google
+bookmarks as the official delicious extension doesn't seem to work very well.
+
+I use this repository following next rules:
+
+  * master points to the last released version (or to the first commit
+    initially)
+  * development points to the last version actually committed
+  * any other branch is temporary
+
+I do forced updates to temporary branches, so don't rely on tracking them. Both
+development and master are never forced.
+
+I commit to development clean patches once I have something working. In the
+meantime I may keep working in a feature branch if I need to experiment a
+bit. Once I got satisfactory results I rewrite the history a bit so that it is
+clean and push that to development. Feature branches are then deleted.
