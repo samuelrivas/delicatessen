@@ -42,6 +42,7 @@ var DELICT_BG = function() {
         set_user : that.set_user,
         get_user : that.get_user,
         set_passwd : that.set_passwd,
+        get_tags : function(args, on_result) { that.get_tags(on_result) }
     }
     return that;
 }();
