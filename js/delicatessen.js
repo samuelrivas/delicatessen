@@ -13,9 +13,16 @@ var DELICATESSEN = {
 };
 
 window.onload = function() {
+
+    var loading = document.createElement("div");
+    loading.textContent = "Loading ...";
+    loading.id = "loading";
+    document.body.appendChild(loading);
+
     DELICATESSEN.get_tags(
         function(t) {
             console.log("Got " + t.length + " tags");
+            document.body.removeChild(loading);
             DELICATESSEN.render_tags(t, document.body);
         });
 };
