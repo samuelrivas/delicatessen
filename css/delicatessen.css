@@ -10,3 +10,15 @@ img {
     width:75px;
     height:75px;
 }
+
+.tag {
+    display:inline-block;
+    margin-right:1px;
+    margin-bottom:1px;
+    background:#F2F2F2;
+    padding-right:10px;
+    padding-left:10px;
+    font-family:sans-serif;
+    font-size:11px;
+    height:17px;
+}
