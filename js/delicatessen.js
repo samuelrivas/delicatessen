@@ -1,4 +1,16 @@
 var DELICATESSEN = {
+    bg_call : function(method, args, on_result) {
+        if (on_result) {
+            chrome.extension.sendRequest(
+                {call : method, args : args }, on_result);
+        } else {
+            chrome.extension.sendRequest({call : method, args : args });
+        }
+    },
+    set_user : function(user) { this.bg_call("set_user", user) },
+    get_user : function(on_result) {
+        this.bg_call("get_user", undefined, on_result);
+    },
     get_tags : function(on_received) {
         chrome.extension.sendRequest({async_call : "get_tags"}, on_received);
     },

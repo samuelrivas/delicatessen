@@ -12,39 +12,30 @@ describe(
 
                         runs(
                             function() {
-                                chrome.extension.sendRequest(
-                                    {call : "set_user", args : "foo"},
-                                    function(o) { });
+                                DELICATESSEN.set_user("foo");
 
-                                chrome.extension.sendRequest(
-                                    {call : "get_user"},
-                                    function(o) { user = o });
+                                DELICATESSEN.get_user(function(o) { user = o });
                             });
 
                         waitsFor(
                             function() { return user !== null },
                             "get_user never returned", 1000);
 
-                        runs(function() {
-                            expect(user).toBe("foo");
+                        runs(
+                            function() {
+                                expect(user).toBe("foo");
 
-                            chrome.extension.sendRequest(
-                                {call : "set_user", args : "delicatessen"},
-                                function(o) { });
+                                DELICATESSEN.set_user("delicatessen")
 
-                            user = null;
-                            chrome.extension.sendRequest(
-                                {call : "get_user"},
-                                function(o) { user = o; console.log(user) });
-                        });
+                                user = null;
+                                DELICATESSEN.get_user(function(o) { user = o });
+                            });
 
                         waitsFor(
                             function() { return user !== null },
                             "get_user never returned", 1000);
 
-                        runs(function() {
-                            console.log(user);
-                            expect(user).toBe("delicatessen") });
+                        runs(function() { expect(user).toBe("delicatessen") });
                     });
             });
     });
