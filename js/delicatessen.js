@@ -9,7 +9,8 @@ var DELICATESSEN = {
             div.className = "tag";
             parentNode.appendChild(div);
         }
-    }
+    },
+    open_tests : function() { chrome.tabs.create({url : "tests/tests.html"}) }
 };
 
 window.onload = function() {
