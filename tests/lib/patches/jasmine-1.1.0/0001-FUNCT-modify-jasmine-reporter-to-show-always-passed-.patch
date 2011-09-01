@@ -1,0 +1,33 @@
+From 172a67b5310b9292cd7a7caee2c718efb16f0e88 Mon Sep 17 00:00:00 2001
+From: Samuel Rivas <samuelrivas@gmail.com>
+Date: Thu, 1 Sep 2011 19:24:54 +0200
+Subject: [PATCH] FUNCT modify jasmine reporter to show always passed tests
+
+---
+ tests/lib/jasmine-1.1.0/jasmine-html.js |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tests/lib/jasmine-1.1.0/jasmine-html.js b/tests/lib/jasmine-1.1.0/jasmine-html.js
+index 7383401..a7476bb 100644
+--- a/tests/lib/jasmine-1.1.0/jasmine-html.js
++++ b/tests/lib/jasmine-1.1.0/jasmine-html.js
+@@ -31,14 +31,14 @@ jasmine.TrivialReporter.prototype.createDom = function(type, attrs, childrenVarA
+ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
+   var showPassed, showSkipped;
+ 
+-  this.outerDiv = this.createDom('div', { className: 'jasmine_reporter' },
++  this.outerDiv = this.createDom('div', { className: 'jasmine_reporter show-passed' },
+       this.createDom('div', { className: 'banner' },
+         this.createDom('div', { className: 'logo' },
+             this.createDom('span', { className: 'title' }, "Jasmine"),
+             this.createDom('span', { className: 'version' }, runner.env.versionString())),
+         this.createDom('div', { className: 'options' },
+             "Show ",
+-            showPassed = this.createDom('input', { id: "__jasmine_TrivialReporter_showPassed__", type: 'checkbox' }),
++            showPassed = this.createDom('input', { id: "__jasmine_TrivialReporter_showPassed__", type: 'checkbox', checked: true }),
+             this.createDom('label', { "for": "__jasmine_TrivialReporter_showPassed__" }, " passed "),
+             showSkipped = this.createDom('input', { id: "__jasmine_TrivialReporter_showSkipped__", type: 'checkbox' }),
+             this.createDom('label', { "for": "__jasmine_TrivialReporter_showSkipped__" }, " skipped")
+-- 
+1.7.4.1
+
