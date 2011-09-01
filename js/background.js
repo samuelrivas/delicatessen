@@ -35,19 +35,15 @@ var DELICT_BG = function() {
         }
     };
 
-    // Group functions exported to the outside through
-    // chrome.extension.sendRequest in the request_handler inner object to ease
-    // our handle_request function
-    that.request_handler = {
-        set_user : that.set_user,
-        get_user : that.get_user,
-        set_passwd : that.set_passwd,
-        get_tags : function(args, on_result) { that.get_tags(on_result) }
-    }
     return that;
 }();
 
 // Unprivileged functions
+DELICT_BG.reload = function() {
+    DELICT_BG.ready = false;
+    location.reload();
+};
+
 DELICT_BG.prompt_if_null = function(data, prompt_text) {
     if (data === null) {
         data = window.prompt(prompt_text);
@@ -106,6 +102,17 @@ DELICT_BG.get_tags_internal = function(user, passwd, on_received) {
 // Internal stuff
 //===============
 
+// Group functions exported to the outside through
+// chrome.extension.sendRequest in the request_handler inner object to ease
+// our handle_request function
+DELICT_BG.request_handler = {
+    set_user : DELICT_BG.set_user,
+    get_user : DELICT_BG.get_user,
+    set_passwd : DELICT_BG.set_passwd,
+    get_tags : function(args, on_result) { DELICT_BG.get_tags(on_result) },
+    reload : DELICT_BG.reload
+}
+
 // XXX This function could be heavy, but my tests with near to 2000 tags
 // show that is not worth asynchronising it
 DELICT_BG.parse_tags = function(tags_doc) {
@@ -121,3 +128,7 @@ DELICT_BG.parse_tags = function(tags_doc) {
 
 // Add the request listener
 chrome.extension.onRequest.addListener(DELICT_BG.handle_request);
+
+// We need to notify when we are up for tests to work just after resetting the
+// background with reload()
+DELICT_BG.ready = true;
