@@ -8,8 +8,12 @@ var DELICATESSEN = {
         }
     },
     set_user : function(user) { this.bg_call("set_user", user) },
+    set_passwd : function(passwd) { this.bg_call("set_passwd", passwd) },
     get_user : function(on_result) {
         this.bg_call("get_user", undefined, on_result);
+    },
+    is_password_set : function(on_result) {
+        this.bg_call("is_passwd_set", undefined, on_result);
     },
     get_tags : function(on_received) {
         chrome.extension.sendRequest({async_call : "get_tags"}, on_received);

@@ -33,8 +33,43 @@
         }
     };
 
+    var is_passwd_set = {
+        descr : "password is not set the first time",
+        test : function() {
+            var set;
+
+            runs(function() {
+                DELICATESSEN.is_password_set(function(o) { set = o });
+            });
+
+            waitsFor(
+                function() { return set !== undefined },
+                "password_set never returned", 1000);
+
+            runs(function() { expect(set).toBeFalsy() });
+        }
+    };
+
+    var set_passwd = {
+        descr : "we can set the passwd",
+        test : function() {
+            var set;
+
+            runs(function() {
+                DELICATESSEN.set_passwd("foo");
+                DELICATESSEN.is_password_set(function(o) { set = o });
+            });
+
+            waitsFor(
+                function() { return set !== undefined },
+                "password_set never returned", 1000);
+
+            runs(function() { expect(set).toBeTruthy() });
+        }
+    };
+
     var set_get_user_name = {
-        descr : "must allow to set the user name and get it back",
+        descr : "we can set the user name and get it back",
         test : function() {
 
             var user;
@@ -84,6 +119,8 @@
         function() {
             describe(
                 "User name test",
-                test_it([get_user_name ,set_get_user_name]));
+                test_it(
+                    [get_user_name, is_passwd_set, set_passwd,
+                     set_get_user_name]));
         });
 })();

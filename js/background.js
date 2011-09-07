@@ -21,6 +21,7 @@ var DELICT_BG = function() {
     };
     that.set_user = function(new_user) { user = new_user };
     that.set_passwd = function(new_passwd) { passwd = new_passwd };
+    that.is_passwd_set = function() { return passwd !== null };
 
     that.get_tags = function(callback) {
         if (tags) {
@@ -109,6 +110,7 @@ DELICT_BG.request_handler = {
     set_user : DELICT_BG.set_user,
     get_user : DELICT_BG.get_user,
     set_passwd : DELICT_BG.set_passwd,
+    is_passwd_set : DELICT_BG.is_passwd_set,
     get_tags : function(args, on_result) { DELICT_BG.get_tags(on_result) },
     reload : DELICT_BG.reload
 }
