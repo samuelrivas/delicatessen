@@ -7,18 +7,9 @@ var DELICT_BG = function() {
 
     var that = {};
 
-    // Internal functions
-    var get_passwd = function() {
-        passwd = that.prompt_if_null(passwd, "Password");
-        return passwd;
-    };
-
     // Privileged functions
     // --------------------
-    that.get_user = function() {
-        user = that.prompt_if_null(user, "User Name");
-        return user;
-    };
+    that.get_user = function() { return user };
     that.set_user = function(new_user) { user = new_user };
     that.set_passwd = function(new_passwd) { passwd = new_passwd };
     that.is_passwd_set = function() { return passwd !== null };
@@ -51,13 +42,6 @@ DELICT_BG.reload = function() {
     DELICT_BG.ready = false;
     location.reload();
 };
-
-DELICT_BG.prompt_if_null = function(data, prompt_text) {
-    if (data === null) {
-        data = window.prompt(prompt_text);
-    }
-    return data;
-}
 
 DELICT_BG.handle_request = function(request, sender, send_response) {
     if (DELICT_BG.request_handler[request.call]) {
