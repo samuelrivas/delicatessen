@@ -58,7 +58,7 @@ DELICT_BG.prompt_if_null = function(data, prompt_text) {
 DELICT_BG.handle_request = function(request, sender, send_response) {
     if (DELICT_BG.request_handler[request.call]) {
         console.log("Background received request:" + request.call);
-        send_response(DELICT_BG.request_handler[request.call](request.args))
+        send_response(DELICT_BG.request_handler[request.call](request.args));
 
     } else if (DELICT_BG.request_handler[request.async_call]) {
         console.log(
