@@ -16,88 +16,83 @@
     //--------------------------------------------------------------------
     // Test cases
     //--------------------------------------------------------------------
-    var get_user_name = {
-        descr : "user name is null the first time",
-        test : function() {
-            var user;
+    var user_credential_tests = [
+        {
+            descr : "user name is null the first time",
+            test : function() {
+                var user;
 
-            runs(function() {
-                DELICATESSEN.get_user(function(o) { user = o });
-            });
+                runs(function() {
+                    DELICATESSEN.get_user(function(o) { user = o });
+                });
 
-            waitsFor(
-                function() { return user !== undefined },
-                "get_user never returned", 1000);
+                waitsFor(
+                    function() { return user !== undefined },
+                    "get_user never returned", 1000);
 
-            runs(function() { expect(user).toBeNull() });
-        }
-    };
+                runs(function() { expect(user).toBeNull() });
+            }
+        }, {
+            descr : "password is not set the first time",
+            test : function() {
+                var set;
 
-    var is_passwd_set = {
-        descr : "password is not set the first time",
-        test : function() {
-            var set;
+                runs(function() {
+                    DELICATESSEN.is_password_set(function(o) { set = o });
+                });
 
-            runs(function() {
-                DELICATESSEN.is_password_set(function(o) { set = o });
-            });
+                waitsFor(
+                    function() { return set !== undefined },
+                    "password_set never returned", 1000);
 
-            waitsFor(
-                function() { return set !== undefined },
-                "password_set never returned", 1000);
+                runs(function() { expect(set).toBeFalsy() });
+            }
+        }, {
+            descr : "we can set the passwd",
+            test : function() {
+                var set;
 
-            runs(function() { expect(set).toBeFalsy() });
-        }
-    };
+                runs(function() {
+                    DELICATESSEN.set_passwd("foo");
+                    DELICATESSEN.is_password_set(function(o) { set = o });
+                });
 
-    var set_passwd = {
-        descr : "we can set the passwd",
-        test : function() {
-            var set;
+                waitsFor(
+                    function() { return set !== undefined },
+                    "password_set never returned", 1000);
 
-            runs(function() {
-                DELICATESSEN.set_passwd("foo");
-                DELICATESSEN.is_password_set(function(o) { set = o });
-            });
+                runs(function() { expect(set).toBeTruthy() });
+            }
+        }, {
+            descr : "we can set the user name and get it back",
+            test : function() {
+                var user;
 
-            waitsFor(
-                function() { return set !== undefined },
-                "password_set never returned", 1000);
+                runs(function() {
+                    DELICATESSEN.set_user("foo");
+                    DELICATESSEN.get_user(function(o) { user = o });
+                });
 
-            runs(function() { expect(set).toBeTruthy() });
-        }
-    };
+                waitsFor(
+                    function() { return user !== undefined },
+                    "get_user never returned", 1000);
 
-    var set_get_user_name = {
-        descr : "we can set the user name and get it back",
-        test : function() {
-            var user;
+                runs(function() {
+                    expect(user).toBe("foo");
 
-            runs(function() {
-                DELICATESSEN.set_user("foo");
-                DELICATESSEN.get_user(function(o) { user = o });
-            });
+                    DELICATESSEN.set_user("delicatessen")
 
-            waitsFor(
-                function() { return user !== undefined },
-                "get_user never returned", 1000);
+                    user = undefined;
+                    DELICATESSEN.get_user(function(o) { user = o });
+                });
 
-            runs(function() {
-                expect(user).toBe("foo");
+                waitsFor(
+                    function() { return user !== undefined },
+                    "get_user never returned", 1000);
 
-                DELICATESSEN.set_user("delicatessen")
-
-                user = undefined;
-                DELICATESSEN.get_user(function(o) { user = o });
-            });
-
-            waitsFor(
-                function() { return user !== undefined },
-                "get_user never returned", 1000);
-
-            runs(function() { expect(user).toBe("delicatessen") });
-        }
-    };
+                runs(function() { expect(user).toBe("delicatessen") });
+            }
+        }];
 
     var tag_tests = [
         {
@@ -115,8 +110,7 @@
 
                 runs(function() { expect(tags.error).toMatch("not set") });
             }
-        },
-        {
+        }, {
             descr : "get_tags returns 401 error if user/passwd are not correct",
             test : function() {
                 var tags;
@@ -133,8 +127,7 @@
 
                 runs(function() { expect(tags.error).toMatch("401") });
             }
-        },
-        {
+        }, {
             descr : "We can get cached tags regardless of credentials",
             test : function() {
                 var tags;
@@ -172,14 +165,7 @@
     describe(
         "Delicatessen API tests",
         function() {
-            describe(
-                "User name tests",
-                test_it(
-                    [get_user_name, is_passwd_set, set_passwd,
-                     set_get_user_name]));
-
-            describe(
-                "Tag tests",
-                test_it(tag_tests));
+            describe("User credential tests", test_it(user_credential_tests));
+            describe("Tag tests", test_it(tag_tests));
         });
 })();
