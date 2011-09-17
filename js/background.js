@@ -22,16 +22,23 @@ var DELICT_BG = function() {
     that.set_user = function(new_user) { user = new_user };
     that.set_passwd = function(new_passwd) { passwd = new_passwd };
     that.is_passwd_set = function() { return passwd !== null };
+    that.set_tags_local = function(t) { tags = t };
 
     that.get_tags = function(callback) {
         if (tags) {
             callback(tags);
+        } else if (user === null) {
+            callback({error : "user is not set"});
+        } else if (passwd === null) {
+            callback({error : "passwd is not set"});
         } else {
             DELICT_BG.get_tags_internal(
-                that.get_user(), get_passwd(),
-                function(t) {
-                    tags = t;
-                    callback (t);
+                user, passwd,
+                function(o) {
+                    if (! o.error) {
+                        tags = o;
+                    }
+                    callback(o);
                 });
         }
     };
@@ -78,12 +85,16 @@ DELICT_BG.get_document = function(url, user, passwd, on_received) {
     rpc_request.onreadystatechange = function() {
         console.log("New request state: " + rpc_request.readyState);
         if (rpc_request.readyState === 4) {
-            if (rpc_request.status !== 200) {
-                throw "Wrong HTTP status: " + rpc_request.status + " "
-                    + rpc_request.statusText
+            console.log(
+                "Received HTTP response with status: " + rpc_request.status
+                    + " " + rpc_request.statusText);
+            if (rpc_request.status === 200) {
+                on_received(rpc_request.responseXML);
+            } else {
+                on_received(
+                    {error: "Wrong HTTP status: " + rpc_request.status + " "
+                     + rpc_request.statusText});
             }
-            console.log("Received HTTP response");
-            on_received(rpc_request.responseXML);
         }
     }
 
@@ -92,9 +103,13 @@ DELICT_BG.get_document = function(url, user, passwd, on_received) {
 };
 
 DELICT_BG.get_tags_internal = function(user, passwd, on_received) {
-    var callback = function(tags_doc) {
-        console.log("Parsing XML tags document");
-        on_received(DELICT_BG.parse_tags(tags_doc));
+    var callback = function(o) {
+        if (o.error) {
+            on_received(o);
+        } else {
+            console.log("Parsing XML tags document");
+            on_received(DELICT_BG.parse_tags(tags_doc));
+        }
     }
     this.get_document(
         "https://api.del.icio.us/v1/tags/get", user, passwd, callback);
@@ -112,6 +127,7 @@ DELICT_BG.request_handler = {
     set_passwd : DELICT_BG.set_passwd,
     is_passwd_set : DELICT_BG.is_passwd_set,
     get_tags : function(args, on_result) { DELICT_BG.get_tags(on_result) },
+    set_tags_local : DELICT_BG.set_tags_local,
     reload : DELICT_BG.reload
 }
 
