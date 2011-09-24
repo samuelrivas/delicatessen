@@ -1,5 +1,16 @@
 (function() {
     //--------------------------------------------------------------------
+    // Auxiliary functions
+    //--------------------------------------------------------------------
+    var test_it = function(test_cases) {
+        return function() {
+            for (var i = 0; i < test_cases.length; i++) {
+                it(test_cases[i].descr, test_cases[i].test);
+            }
+        }
+    };
+
+    //--------------------------------------------------------------------
     // Setup and cleanup
     //--------------------------------------------------------------------
     beforeEach(function() {
@@ -147,17 +158,6 @@
                 runs(function() { expect(tags).toEqual(fake_tags) });
             }
         }];
-
-    //--------------------------------------------------------------------
-    // Auxiliary functions
-    //--------------------------------------------------------------------
-    var test_it = function(test_cases) {
-        return function() {
-            for (var i = 0; i < test_cases.length; i++) {
-                it(test_cases[i].descr, test_cases[i].test);
-            }
-        }
-    };
 
     //--------------------------------------------------------------------
     // Test suites
