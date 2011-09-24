@@ -10,6 +10,16 @@
         }
     };
 
+    var get_value_and_wait = function(args, timeout) {
+        runs(function() {
+            DELICATESSEN[args.funct](function(o) { args.value = o });
+        });
+
+        waitsFor(
+            function() { return args.value !== undefined },
+            args.funct + " never returned", timeout ? timeout : 1000);
+    };
+
     //--------------------------------------------------------------------
     // Setup and cleanup
     //--------------------------------------------------------------------
@@ -31,77 +41,48 @@
         {
             descr : "user name is null the first time",
             test : function() {
-                var user;
-
-                runs(function() {
-                    DELICATESSEN.get_user(function(o) { user = o });
-                });
-
-                waitsFor(
-                    function() { return user !== undefined },
-                    "get_user never returned", 1000);
-
-                runs(function() { expect(user).toBeNull() });
+                var args = { funct : "get_user" };
+                get_value_and_wait(args);
+                runs(function() { expect(args.value).toBeNull() });
             }
         }, {
             descr : "password is not set the first time",
             test : function() {
-                var set;
-
-                runs(function() {
-                    DELICATESSEN.is_password_set(function(o) { set = o });
-                });
-
-                waitsFor(
-                    function() { return set !== undefined },
-                    "password_set never returned", 1000);
-
-                runs(function() { expect(set).toBeFalsy() });
+                var args = { funct : "is_password_set" };
+                get_value_and_wait(args);
+                runs(function() { expect(args.value).toBeFalsy() });
             }
         }, {
             descr : "we can set the passwd",
             test : function() {
-                var set;
+                var args = { funct : "is_password_set" };
 
                 runs(function() {
                     DELICATESSEN.set_passwd("foo");
-                    DELICATESSEN.is_password_set(function(o) { set = o });
                 });
 
-                waitsFor(
-                    function() { return set !== undefined },
-                    "password_set never returned", 1000);
-
-                runs(function() { expect(set).toBeTruthy() });
+                get_value_and_wait(args);
+                runs(function() { expect(args.value).toBeTruthy() });
             }
         }, {
             descr : "we can set the user name and get it back",
             test : function() {
-                var user;
+                var args = { funct : "get_user" };
 
                 runs(function() {
                     DELICATESSEN.set_user("foo");
-                    DELICATESSEN.get_user(function(o) { user = o });
                 });
-
-                waitsFor(
-                    function() { return user !== undefined },
-                    "get_user never returned", 1000);
+                get_value_and_wait(args);
 
                 runs(function() {
-                    expect(user).toBe("foo");
+                    expect(args.value).toBe("foo");
 
+                    args.value = undefined;
                     DELICATESSEN.set_user("delicatessen")
-
-                    user = undefined;
-                    DELICATESSEN.get_user(function(o) { user = o });
                 });
 
-                waitsFor(
-                    function() { return user !== undefined },
-                    "get_user never returned", 1000);
-
-                runs(function() { expect(user).toBe("delicatessen") });
+                get_value_and_wait(args);
+                runs(function() { expect(args.value).toBe("delicatessen") });
             }
         }];
 
@@ -109,53 +90,39 @@
         {
             descr : "get_tags returns error if user or passwd are not set",
             test : function() {
-                var tags;
-
+                var args = { funct : "get_tags" };
+                get_value_and_wait(args);
                 runs(function() {
-                    DELICATESSEN.get_tags(function(o) { tags = o });
+                    expect(args.value.error).toMatch("not set");
                 });
-
-                waitsFor(
-                    function() { return tags !== undefined },
-                    "get_tags never returned", 1000);
-
-                runs(function() { expect(tags.error).toMatch("not set") });
             }
         }, {
             descr : "get_tags returns 401 error if user/passwd are not correct",
             test : function() {
-                var tags;
+                var args = { funct : "get_tags" };
 
                 runs(function() {
                     DELICATESSEN.set_user("foo");
                     DELICATESSEN.set_passwd("bar");
-                    DELICATESSEN.get_tags(function(o) { tags = o });
                 });
+                get_value_and_wait(args, 5000);
 
-                waitsFor(
-                    function() { return tags !== undefined },
-                    "get_tags never returned", 5000);
-
-                runs(function() { expect(tags.error).toMatch("401") });
+                runs(function() { expect(args.value.error).toMatch("401") });
             }
         }, {
             descr : "We can get cached tags regardless of credentials",
             test : function() {
-                var tags;
+                var args = {funct : "get_tags" };
                 var fake_tags = ["foo", "bar"];
 
                 runs(function() {
                     chrome.extension.sendRequest(
                         {call : "set_tags_local",
                          args : ["foo", "bar"]});
-                    DELICATESSEN.get_tags(function(o) { tags = o });
                 });
+                get_value_and_wait(args);
 
-                waitsFor(
-                    function() { return tags !== undefined },
-                    "get_tags never returned", 1000);
-
-                runs(function() { expect(tags).toEqual(fake_tags) });
+                runs(function() { expect(args.value).toEqual(fake_tags) });
             }
         }];
 
